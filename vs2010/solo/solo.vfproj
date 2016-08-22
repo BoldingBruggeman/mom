@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{137A04DE-8D3A-4732-814A-0539EE612DC7}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\win32\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom5\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom5\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov;$(FABMDIR)/include;$(FABMDIR)/src/drivers/mom5" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(LOCALAPPDATA)\fabm\mom5\lib" IgnoreDefaultLibraryNames="libcmt.lib" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="fabm.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\win32\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom5\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom5\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov;$(FABMDIR)/include;$(FABMDIR)/src/drivers/mom5" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(LOCALAPPDATA)\fabm\mom5\lib" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="fabm.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom5\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom5\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov;$(FABMDIR)/include;$(FABMDIR)/src/drivers/mom5" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(LOCALAPPDATA)\fabm\mom5\lib" IgnoreDefaultLibraryNames="libcmt.lib" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="fabm.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom5\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom5\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov;$(FABMDIR)/include;$(FABMDIR)/src/drivers/mom5" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(LOCALAPPDATA)\fabm\mom5\lib" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="fabm.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<Filter Name="mom5">
+		<Filter Name="ocean_core">
+		<File RelativePath="..\..\src\mom5\ocean_core\ocean_memory.h"/></Filter>
+		<Filter Name="ocean_param">
+		<Filter Name="gotm-4.0">
+		<Filter Name="include">
+		<File RelativePath="..\..\src\mom5\ocean_param\gotm-4.0\include\cppdefs.h"/>
+		<File RelativePath="..\..\src\mom5\ocean_param\gotm-4.0\include\version.h"/></Filter></Filter></Filter></Filter></Filter>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="mom5">
+		<Filter Name="drivers">
+		<File RelativePath="..\..\src\mom5\drivers\mom_oasis3_interface.F90"/>
+		<File RelativePath="..\..\src\mom5\drivers\ocean_solo.F90"/></Filter></Filter></Filter></Files>
+	<Globals/></VisualStudioProject>

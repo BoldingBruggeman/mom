@@ -115,7 +115,7 @@ real    :: multiplier
 
   memuse = 0.0
   multiplier = 1.0
-
+  return
   mem_unit = get_unit()
   open(mem_unit, file=file_name, form='FORMATTED', action='READ', access='SEQUENTIAL')
   

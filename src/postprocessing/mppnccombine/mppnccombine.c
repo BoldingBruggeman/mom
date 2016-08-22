@@ -113,7 +113,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <netcdf.h>
-#include <sys/resource.h>
+//#include <sys/resource.h>
 
 #ifndef MAX_BF
 #  define MAX_BF 100  /* maximum blocking factor */
@@ -158,7 +158,7 @@ char *nc_type_to_str(nc_type);
 
 static void ***varbuf = NULL;  /* Buffers for multiple records of decomposed var */
 
-struct rusage ruse; /* structure used to store values from getrusage() */
+//struct rusage ruse; /* structure used to store values from getrusage() */
 static unsigned long maxrss = 0; /* maximum memory used so far in kilobytes */
 static int print_mem_usage = 0;
 static unsigned long mem_allocated = 0; /* memory allocated so far */
@@ -173,18 +173,18 @@ static inline void check_mem_usage(void) {
   static long prev_rss = 0;
   static long PAGE_SIZE = 0;
   long rss = 0;
-  if (PAGE_SIZE == 0) PAGE_SIZE = sysconf(_SC_PAGESIZE);
-  if (getrusage(RUSAGE_SELF, &ruse) == 0) rss = ruse.ru_maxrss * PAGE_SIZE;
-  if (rss == 0) {
-    /* bug in Linux kernel means resident size is reported 0 */
-    FILE * f = fopen("/proc/self/statm", "r");
-    if (f != NULL) {
-      int discard;
-      fscanf(f, "%d %ld\n", &discard, &rss);
-      fclose(f);
-      rss *= PAGE_SIZE;
-    }
-  }
+  //if (PAGE_SIZE == 0) PAGE_SIZE = sysconf(_SC_PAGESIZE);
+  //if (getrusage(RUSAGE_SELF, &ruse) == 0) rss = ruse.ru_maxrss * PAGE_SIZE;
+  //if (rss == 0) {
+  //  /* bug in Linux kernel means resident size is reported 0 */
+  //  FILE * f = fopen("/proc/self/statm", "r");
+  //  if (f != NULL) {
+  //    int discard;
+  //    fscanf(f, "%d %ld\n", &discard, &rss);
+  //    fclose(f);
+  //    rss *= PAGE_SIZE;
+  //  }
+  //}
   if (rss > maxrss) maxrss = rss;
   printf("rss=%lu KB, delta=%ld KB, maxrss=%lu KB\n", rss/1024, (rss - prev_rss)/1024, maxrss/1024);
   prev_rss = rss;
@@ -198,6 +198,12 @@ static void print_estimated_mem_footprint(int verbose) {
   }
   else printf("%.0f\n", ceil((float)estimated_maxrss/(1024*1024)));
   return;
+}
+
+inline int min(int a, int b)
+{
+  if (a<b) return a;
+  return b;
 }
 
 int main(int argc, char *argv[])
@@ -297,7 +303,11 @@ int main(int argc, char *argv[])
       else if (!strcmp(argv[a],"-64"))
         format=(NC_NOCLOBBER | NC_64BIT_OFFSET);
       else if (!strcmp(argv[a], "-n4"))
-	format=(NC_NOCLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL);
+#ifndef NC_NETCDF4
+        {fprintf(stderr,"Error: mppnccombine was not built against NetCDF 4 library!\n"); return(1);}
+#else
+        format=(NC_NOCLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL);
+#endif
       else if (!strcmp(argv[a],"-m")) missing=1;
       else
         {
@@ -677,12 +687,6 @@ void usage()
   }
 
 
-inline int min(int a, int b)
-{
-  if (a<b) return a;
-  return b;
-}
-
 /* Open an input file and get some information about it, define the   */
 /* structure of the output file if necessary, prepare to copy all the */
 /* variables for the current block to memory (and non-decomposed variables */
@@ -703,6 +707,8 @@ int process_file(char *ncname, unsigned char appendnc,
                    /*  #3 ending position of decomposed dimension   */
    char attname[MAX_NC_NAME];  /* Name of a global or variable attribute */
    unsigned char ncinfileerror=0;  /* Were there any file errors? */
+   int r;
+   unsigned long mem_for_rec, tmp_mem_alloc;
 
    if (print_mem_usage) check_mem_usage();
 
@@ -899,8 +905,7 @@ int process_file(char *ncname, unsigned char appendnc,
    /* output file. Decomposed variables for N records from this file will */
    /* be written to memory, where they will eventually get merged with those */
    /* from other input files */
-   int r = block * (*bf); // the position of r is absolute
-   unsigned long mem_for_rec, tmp_mem_alloc;
+   r = block * (*bf); // the position of r is absolute
    do 
      {
       tmp_mem_alloc = mem_allocated; /* store current memory usage in a temporary */
@@ -939,6 +944,7 @@ int process_vars(struct fileinfo *ncinfile, struct fileinfo *ncoutfile,
    int offset, ioffset, joffset, koffset, loffset;
    int recdimsize; /* Using a local recdimsize to correct issue when netcdf file does not have a record dimension */
    long long varbufsize;
+   int z;
 
    if ( ncinfile->recdim < 0 )
      recdimsize=1;
@@ -992,7 +998,6 @@ int process_vars(struct fileinfo *ncinfile, struct fileinfo *ncoutfile,
         exit(1);
       }
       /* now initialize the buffer to create a mult-dimensional array */
-      int z;
       for (z=0; z<(*bf); z++) {
         varbuf[z] = (void**) ((size_t)varbuf + (*bf)*sizeof(void**) + z*MAX_NC_VARS*sizeof(void*));
       }

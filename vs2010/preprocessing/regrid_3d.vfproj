@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{137A04DE-8D3A-4732-814A-0539EE612DC7}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\win32\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" NullPointerCheck="true" BoundsCheck="true" UninitializedVariablesCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" IgnoreDefaultLibraryNames="libcmt" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\win32\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" SubSystem="subSystemConsole" StackReserveSize="128000000"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" SubSystem="subSystemConsole" StackReserveSize="128000000"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd"/>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath="..\..\src\preprocessing\regrid_3d\regrid_3d.f90"/></Filter></Files>
+	<Globals/></VisualStudioProject>

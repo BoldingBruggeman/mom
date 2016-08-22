@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{137A04DE-8D3A-4732-814A-0539EE612DC7}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="..\netcdf\win32\include;$(MSMPI_INC);$(MSMPI_INC)\i386;..\..\src\mom4p1\ocean_param\gotm-4.0\include;..\..\src\shared\include;..\..\src\shared\mpp\include;..\..\src\shared\drifters;..\..\src\mom4p1\ocean_core;..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="ENABLE_ODA;use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL;GETENV=getenv_ifort;FLUSH=flush_ifort" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" NullPointerCheck="true" BoundsCheck="true" UninitializedVariablesCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(MSMPI_LIB32);$(SolutionDir)\..\NetCDF\3.6.3\src\win32\NET\Release" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFLibrarianTool" AdditionalLibraryDirectories="$(MSMPI_LIB32);$(ProjectDir)\..\netcdf\win32\lib" LinkLibraryDependencies="true" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="..\netcdf\win32\include;$(MSMPI_INC);$(MSMPI_INC)\i386;..\..\src\mom4p1\ocean_param\gotm-4.0\include;..\..\src\shared\include;..\..\src\shared\mpp\include;..\..\src\shared\drifters;..\..\src\mom4p1\ocean_core;..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="ENABLE_ODA;use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL;GETENV=getenv_ifort;FLUSH=flush_ifort" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(MSMPI_LIB32);$(SolutionDir)\..\NetCDF\3.6.3\src\win32\NET\Release" SubSystem="subSystemConsole" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFLibrarianTool" AdditionalLibraryDirectories="$(MSMPI_LIB32);$(ProjectDir)\..\netcdf\win32\lib" LinkLibraryDependencies="true" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(MSMPI_INC)\amd64;$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="ENABLE_ODA;use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL;GETENV=getenv_ifort;FLUSH=flush_ifort" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(MSMPI_LIB64);$(SolutionDir)\..\NetCDF\3.6.3\src\win32\NET\x64\Release" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFLibrarianTool" AdditionalLibraryDirectories="$(MSMPI_LIB64);$(ProjectDir)\..\netcdf\x64\lib" LinkLibraryDependencies="true" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" OutputDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" IntermediateDirectory="$(PlatformName)-$(ConfigurationName)\$(ProjectName)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" UseProcessorExtensions="codeExclusivelyHost" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)\..\netcdf\x64\include;$(MSMPI_INC);$(MSMPI_INC)\amd64;$(ProjectDir)\..\..\src\mom4p1\ocean_param\gotm-4.0\include;$(ProjectDir)\..\..\src\shared\include;$(ProjectDir)\..\..\src\shared\mpp\include;$(ProjectDir)\..\..\src\shared\drifters;$(ProjectDir)\..\..\src\mom4p1\ocean_core;$(ProjectDir)\..\..\src\atmos_param\monin_obukhov" PreprocessorDefinitions="ENABLE_ODA;use_netCDF;use_netCDF3;use_libMPI;NO_DEV_NULL;GETENV=getenv_ifort;FLUSH=flush_ifort" RealKIND="realKIND8" SafeCRAYPointers="true" ByteRECL="true" FlushDenormalResultsToZero="true" ExternalNameInterpretation="extNameLowerCase"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\$(SolutionName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(MSMPI_LIB64);$(SolutionDir)\..\NetCDF\3.6.3\src\win32\NET\x64\Release" SubSystem="subSystemConsole" StackReserveSize="128000000" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFLibrarianTool" AdditionalLibraryDirectories="$(MSMPI_LIB64);$(ProjectDir)\..\netcdf\x64\lib" LinkLibraryDependencies="true" AdditionalDependencies="netcdfs.lib msmpi.lib msmpifec.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<Filter Name="shared">
+		<Filter Name="drifters">
+		<File RelativePath="..\..\src\shared\drifters\drifters_compute_k.h"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_push.h"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_set_field.h"/>
+		<File RelativePath="..\..\src\shared\drifters\fms_switches.h"/></Filter>
+		<Filter Name="field_manager">
+		<File RelativePath="..\..\src\shared\field_manager\parse.inc"/></Filter>
+		<Filter Name="fms">
+		<File RelativePath="..\..\src\shared\fms\read_data_2d.inc"/>
+		<File RelativePath="..\..\src\shared\fms\read_data_3d.inc"/>
+		<File RelativePath="..\..\src\shared\fms\read_data_4d.inc"/>
+		<File RelativePath="..\..\src\shared\fms\write_data.inc"/></Filter>
+		<Filter Name="include">
+		<File RelativePath="..\..\src\shared\include\fms_platform.h"/></Filter>
+		<Filter Name="mpp">
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_chksum.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_chksum_int.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_chksum_scalar.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_comm.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_comm_mpi.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_comm_nocomm.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_comm_sma.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_data_mpi.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_data_nocomm.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_data_sma.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_check.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_checkV.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_get_boundary.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_global_field.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_redistribute.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_update.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_update_ad.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_updateV.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_do_updateV_ad.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_domains_comm.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_domains_define.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_domains_misc.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_domains_reduce.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_domains_util.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_error_a_a.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_error_a_s.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_error_s_a.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_error_s_s.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_get_boundary.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_global_field.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_global_reduce.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_global_sum.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_global_sum_ad.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_global_sum_tl.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_io_connect.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_io_misc.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_io_read.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_io_util.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_io_write.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_read_2Ddecomp.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_reduce_mpi.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_reduce_nocomm.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_reduce_sma.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_sum.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_sum_mpi.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_sum_nocomm.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_sum_sma.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_transmit.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_transmit_mpi.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_transmit_nocomm.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_transmit_sma.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_update_domains2D.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_update_domains2D_ad.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_util.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_util_mpi.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_util_nocomm.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_util_sma.inc"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_write.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\mpp_write_2Ddecomp.h"/>
+		<File RelativePath="..\..\src\shared\mpp\include\system_clock.h"/></Filter></Filter></Filter>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="shared">
+		<Filter Name="amip_interp">
+		<File RelativePath="..\..\src\shared\amip_interp\amip_interp.F90"/></Filter>
+		<Filter Name="astronomy">
+		<File RelativePath="..\..\src\shared\astronomy\astronomy.F90"/></Filter>
+		<Filter Name="axis_utils">
+		<File RelativePath="..\..\src\shared\axis_utils\axis_utils.F90"/></Filter>
+		<Filter Name="column_diagnostics">
+		<File RelativePath="..\..\src\shared\column_diagnostics\column_diagnostics.F90"/></Filter>
+		<Filter Name="constants">
+		<File RelativePath="..\..\src\shared\constants\constants.F90"/></Filter>
+		<Filter Name="coupler">
+		<File RelativePath="..\..\src\shared\coupler\atmos_ocean_fluxes.F90"/>
+		<File RelativePath="..\..\src\shared\coupler\coupler_types.F90"/>
+		<File RelativePath="..\..\src\shared\coupler\ensemble_manager.F90"/></Filter>
+		<Filter Name="data_override">
+		<File RelativePath="..\..\src\shared\data_override\data_override.F90"/></Filter>
+		<Filter Name="diag_manager">
+		<File RelativePath="..\..\src\shared\diag_manager\diag_axis.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_data.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_grid.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_manager.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_output.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_table.F90"/>
+		<File RelativePath="..\..\src\shared\diag_manager\diag_util.F90"/></Filter>
+		<Filter Name="drifters">
+		<File RelativePath="..\..\src\shared\drifters\cloud_interpolator.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_comm.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_core.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_input.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\drifters_io.F90"/>
+		<File RelativePath="..\..\src\shared\drifters\quicksort.F90"/></Filter>
+		<Filter Name="exchange">
+		<File RelativePath="..\..\src\shared\exchange\stock_constants.F90"/>
+		<File RelativePath="..\..\src\shared\exchange\xgrid.F90"/></Filter>
+		<Filter Name="fft">
+		<File RelativePath="..\..\src\shared\fft\fft.F90"/>
+		<File RelativePath="..\..\src\shared\fft\fft99.F90"/></Filter>
+		<Filter Name="field_manager">
+		<File RelativePath="..\..\src\shared\field_manager\field_manager.F90"/>
+		<File RelativePath="..\..\src\shared\field_manager\fm_util.F90"/></Filter>
+		<Filter Name="fms">
+		<File RelativePath="..\..\src\shared\fms\fms.F90"/>
+		<File RelativePath="..\..\src\shared\fms\fms_io.F90"/>
+		<File RelativePath="..\..\src\shared\fms\test_fms_io.F90"/></Filter>
+		<Filter Name="horiz_interp">
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp.F90"/>
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp_bicubic.F90"/>
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp_bilinear.F90"/>
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp_conserve.F90"/>
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp_spherical.F90"/>
+		<File RelativePath="..\..\src\shared\horiz_interp\horiz_interp_type.F90"/></Filter>
+		<Filter Name="memutils">
+		<File RelativePath="..\..\src\shared\memutils\memutils.F90"/></Filter>
+		<Filter Name="mosaic">
+		<File RelativePath="..\..\src\shared\mosaic\gradient.F90"/>
+		<File RelativePath="..\..\src\shared\mosaic\grid.F90"/>
+		<File RelativePath="..\..\src\shared\mosaic\mosaic.F90"/></Filter>
+		<Filter Name="mpp">
+		<File RelativePath="..\..\src\shared\mpp\mpp.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_data.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_domains.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_io.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_memutils.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_parameter.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_pset.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\mpp_utilities.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\test_mpp.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\test_mpp_domains.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\test_mpp_io.F90"/>
+		<File RelativePath="..\..\src\shared\mpp\test_mpp_pset.F90"/></Filter>
+		<Filter Name="oda_tools">
+		<File RelativePath="..\..\src\shared\oda_tools\oda_core.F90"/>
+		<File RelativePath="..\..\src\shared\oda_tools\oda_types.F90"/>
+		<File RelativePath="..\..\src\shared\oda_tools\write_ocean_data.F90"/>
+		<File RelativePath="..\..\src\shared\oda_tools\xbt_drop_rate_adjust.f90"/></Filter>
+		<Filter Name="platform">
+		<File RelativePath="..\..\src\shared\platform\platform.F90"/></Filter>
+		<Filter Name="random_numbers">
+		<File RelativePath="..\..\src\shared\random_numbers\MersenneTwister.F90"/>
+		<File RelativePath="..\..\src\shared\random_numbers\random_numbers.F90"/></Filter>
+		<Filter Name="sat_vapor_pres">
+		<File RelativePath="..\..\src\shared\sat_vapor_pres\sat_vapor_pres.F90"/>
+		<File RelativePath="..\..\src\shared\sat_vapor_pres\sat_vapor_pres_k.F90"/></Filter>
+		<Filter Name="station_data">
+		<File RelativePath="..\..\src\shared\station_data\station_data.F90"/></Filter>
+		<Filter Name="time_interp">
+		<File RelativePath="..\..\src\shared\time_interp\time_interp.F90"/>
+		<File RelativePath="..\..\src\shared\time_interp\time_interp_external.F90"/></Filter>
+		<Filter Name="time_manager">
+		<File RelativePath="..\..\src\shared\time_manager\get_cal_time.F90"/>
+		<File RelativePath="..\..\src\shared\time_manager\time_manager.F90"/></Filter>
+		<Filter Name="topography">
+		<File RelativePath="..\..\src\shared\topography\gaussian_topog.F90"/>
+		<File RelativePath="..\..\src\shared\topography\topography.F90"/></Filter>
+		<Filter Name="tracer_manager">
+		<File RelativePath="..\..\src\shared\tracer_manager\tracer_manager.F90"/></Filter>
+		<Filter Name="tridiagonal">
+		<File RelativePath="..\..\src\shared\tridiagonal\tridiagonal.F90"/></Filter></Filter>
+		<File RelativePath=".\ifort.F90"/></Filter></Files>
+	<Globals/></VisualStudioProject>

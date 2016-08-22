@@ -52,6 +52,10 @@ int mld_id_() { /* dummy routine for portability */
 }
 #endif /* sgi */
 
+int mld_id() { /* dummy routine for portability */
+  return mld_id_();
+}
+
 #ifdef test_threadloc
 void main(int argc, char **argv) {
   MPI_Init( &argc, &argv );

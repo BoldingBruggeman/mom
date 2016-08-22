@@ -318,7 +318,7 @@ real    :: multiplier
 
   memuse = 0.0
   multiplier = 1.0
-
+  return
   call mpp_open ( mem_unit, file_name,                                 &
                       form=MPP_ASCII,        action=MPP_RDONLY,        &
                       access=MPP_SEQUENTIAL, threading=MPP_SINGLE )

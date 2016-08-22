@@ -728,9 +728,10 @@ int invert_matrix_3x3(long double m[], long double m_inv[]) {
 #ifdef test_invert_matrix_3x3
   printf("det = %Lf\n", det);
 #endif  
-  if (fabs(det) < EPSLN15 ) return 0;
 
   const long double deti = 1.0/det;
+
+  if (fabs(det) < EPSLN15 ) return 0;
 
   m_inv[0] = (m[4]*m[8] - m[5]*m[7]) * deti;
   m_inv[1] = (m[2]*m[7] - m[1]*m[8]) * deti;
