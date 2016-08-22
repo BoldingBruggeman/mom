@@ -225,6 +225,22 @@ use ocean_generic_mod, only: ocean_generic_init
 use ocean_generic_mod, only: ocean_generic_column_physics
 use ocean_generic_mod, only: ocean_generic_end
 use ocean_generic_mod, only: ocean_generic_flux_init
+
+use ocean_fabm_mod, only: do_ocean_fabm
+use ocean_fabm_mod, only: ocean_fabm_end
+use ocean_fabm_mod, only: ocean_fabm_init
+use ocean_fabm_mod, only: ocean_fabm_source
+use ocean_fabm_mod, only: ocean_fabm_start
+use ocean_fabm_mod, only: ocean_fabm_bbc
+use ocean_fabm_mod, only: ocean_fabm_sbc
+use ocean_fabm_mod, only: ocean_fabm_tracer
+use ocean_fabm_mod, only: ocean_fabm_avg_sfc
+use ocean_fabm_mod, only: ocean_fabm_sum_sfc
+use ocean_fabm_mod, only: ocean_fabm_zero_sfc
+use ocean_fabm_mod, only: ocean_fabm_flux_init
+use ocean_fabm_mod, only: ocean_fabm_sfc_end
+use ocean_fabm_mod, only: ocean_fabm_init_sfc
+
 #endif 
 
 use ocean_frazil_mod,     only: ocean_frazil_init
@@ -604,6 +620,11 @@ if (do_ocean_bgc_restore) then  !{
                              Domain%isd, Domain%ied, Domain%jsd, Domain%jed, T_prog, Grid%kmt)
 endif  !}
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_bbc(Domain%isc, Domain%iec, Domain%jsc, Domain%jec,        &
+                         Domain%isd, Domain%ied, Domain%jsd, Domain%jed, T_prog, Grid%kmt)
+endif  !}
+
 #endif 
 
 return
@@ -726,6 +747,13 @@ endif  !}
 
 if (do_generic_tracer) call ocean_generic_end
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_end(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk, &
+                         Domain%isd, Domain%ied, Domain%jsd, Domain%jed,       &
+                         T_prog, Grid%dat, Grid%tmask, Domain%domain2d,        &
+                         Thickness%rho_dzt, Time%taup1)
+endif  !}
+
 #endif 
 
 return
@@ -839,6 +867,14 @@ if (.not. initialized) then  !{
                               Domain%isd, Domain%ied, Domain%jsd, Domain%jed,                   &
                               isc_bnd, jsc_bnd,                                &
                               Ocean%fields, T_prog, Dens%rho, Time%taum1, Time%model_time,      &
+                              Grid%tmask)
+  endif  !}
+
+  if (do_ocean_fabm) then  !{
+    call ocean_fabm_init_sfc(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk,      &
+                              Domain%isd, Domain%ied, Domain%jsd, Domain%jed,              &
+                              isc_bnd, iec_bnd, jsc_bnd, jec_bnd,                          &
+                              Ocean%fields, T_prog, Dens%rho, Time%taum1, Time%model_time, &
                               Grid%tmask)
   endif  !}
 
@@ -958,6 +994,13 @@ if (do_ocean_ibgc) then  !{
                              Grid%tmask)
 endif  !}
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_sum_sfc(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk,        &
+                             Domain%isd, Domain%ied, Domain%jsd, Domain%jed,              &
+                             isc_bnd, iec_bnd, jsc_bnd, jec_bnd,                          &
+                             Ocean%fields, T_prog, Dens%rho, Time%taum1, Time%model_time, &
+                             Grid%tmask)
+endif  !}
 
 #endif 
 
@@ -1056,6 +1099,12 @@ if (do_ocean_ibgc) then  !{
                              Ocean%fields, Ocean%avg_kount, Grid%tmask)
 endif  !}
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_avg_sfc(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk, &
+                             Domain%isd, Domain%ied, Domain%jsd, Domain%jed,       &
+                             isc_bnd, iec_bnd, jsc_bnd, jec_bnd,                   &
+                             Ocean%fields, Ocean%avg_kount, Grid%tmask)
+endif  !}
 
 #endif 
 
@@ -1125,6 +1174,10 @@ endif  !}
 
 if (do_generic_tracer) call ocean_generic_zero_sfc(Ocean%fields)
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_zero_sfc(Ocean%fields)
+endif  !}
+
 #endif 
 
 return
@@ -1178,6 +1231,10 @@ endif  !}
 
 if (do_ocean_ibgc) then  !{
   call ocean_ibgc_sfc_end
+endif  !}
+
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_sfc_end
 endif  !}
 
 #endif 
@@ -1288,6 +1345,13 @@ if (do_ocean_ibgc) then  !{
                            Grid, Time, Ice_ocean_boundary_fluxes)
 endif  !}
 
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_sbc(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk, &
+                           Domain%isd, Domain%ied, Domain%jsd, Domain%jed,     &
+                           isc_bnd, iec_bnd, jsc_bnd, jec_bnd,                 &
+                           T_prog, Time%tau, Time%model_time,                  &
+                           Grid%tmask, Ice_ocean_boundary_fluxes)
+endif  !}
 
 #endif 
 
@@ -1378,6 +1442,8 @@ call ocean_ibgc_init
 
 call ocean_generic_init(Domain,Grid,Time)
 
+call ocean_fabm_init
+
 #endif 
 
 call transport_matrix_init
@@ -1453,6 +1519,8 @@ call ocean_bgc_restore_flux_init
 call ocean_ibgc_flux_init
 
 call ocean_generic_flux_init
+
+call ocean_fabm_flux_init
 
 #endif 
 
@@ -1551,6 +1619,13 @@ if (do_ocmip2_he) then
                         Time%model_time, Grid%tmask, Grid, Time, Grid%kmt)
 endif
 
+if (do_ocean_fabm) then
+  call ocean_fabm_source(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk,    &
+                         isd, ied, jsd, jed, T_prog, T_diag,                         &
+                         Time%taum1, Time%model_time, Grid%dat, Grid%zw, Grid%tmask, &
+                         Grid%kmt, Thickness%rho_dzt, Thickness%dzt, Dens, dtts, Domain%domain2d)
+endif
+
 #endif 
 
 if (do_ocean_residency) then  !{        ! must come last
@@ -1575,7 +1650,7 @@ end subroutine ocean_tpm_source
 ! </DESCRIPTION>
 !
 
-subroutine ocean_tpm_start(Domain, Grid, T_prog, T_diag, Time, Thickness)  !{
+subroutine ocean_tpm_start(Domain, Grid, T_prog, T_diag, Time, Thickness, swflx, swflx_vis, Velocity)  !{
 
 implicit none
 
@@ -1591,6 +1666,8 @@ type(ocean_prog_tracer_type), dimension(:), intent(in)  :: T_prog
 type(ocean_diag_tracer_type), dimension(:), intent(in)  :: T_diag
 type(ocean_time_type), intent(in)                       :: Time
 type(ocean_thickness_type), intent(in)                  :: Thickness
+real, dimension(:,:), target                            :: swflx, swflx_vis
+type(ocean_Velocity_type), intent(in)                   :: Velocity
 
 !
 !-----------------------------------------------------------------------
@@ -1683,6 +1760,16 @@ if (do_ocean_ibgc) then  !{
                              Grid%tmask,           &
                              Grid%tracer_axes, Domain%domain2d)
                              
+endif  !}
+
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_start(Domain%isc, Domain%iec, Domain%jsc, Domain%jec, Grid%nk,        &
+                           Domain%isd, Domain%ied, Domain%jsd, Domain%jed,              &
+                           T_prog, T_diag, Time%taup1, Time%model_time,                 &
+                           Grid%dat, Grid%tmask, Grid%kmt, Grid%xt, Grid%yt, Grid%zt,   &
+                           Grid%zw, Grid%ht, Grid%dzt,                                  &
+                           Grid%name, Grid%tracer_axes, Domain%domain2d,                &
+                           Thickness%rho_dzt, Thickness%dzt, swflx, swflx_vis, Velocity%current_wave_stress)
 endif  !}
 
 #endif 
@@ -1787,6 +1874,10 @@ if (do_generic_tracer) then
    call ocean_generic_column_physics(Thickness, hblt_depth, Time, &
         Grid, dtts, Domain%isd,Domain%jsd, T_prog, T_diag,sw_pen,opacity, diff_cbt, Velocity)
 endif
+
+if (do_ocean_fabm) then  !{
+  call ocean_fabm_tracer()
+endif  !}
 
 #endif 
 

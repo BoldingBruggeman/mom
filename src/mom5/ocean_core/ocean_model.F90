@@ -1306,7 +1306,7 @@ subroutine ocean_model_init(Ocean, Ocean_state, Time_init, Time_in)
     call ocean_overflow_OFP_init(Grid, Domain, Time, Dens, T_prog(:), Ocean_options, &
                              vert_coordinate_type, dtime_t, debug=debug)    
     call initialize_ocean_sfc(Time, Thickness, T_prog(:), T_diag(:), Velocity, Ocean)
-    call ocean_tpm_start(Domain, Grid, T_prog(:), T_diag(:), Time, Thickness)
+    call ocean_tpm_start(Domain, Grid, T_prog(:), T_diag(:), Time, Thickness, swflx, swflx_vis, Velocity)
     call ocean_diag_init(Grid, Domain, Time, Time_steps, Thickness, T_prog(:), T_diag(:), Dens, &
                          vert_coordinate_class, horz_grid, have_obc, cmip_units, use_blobs)
     call ocean_increment_eta_init(Grid, Domain, Time)
