@@ -257,7 +257,7 @@ real,_ALLOCATABLE,dimension(:,:,:) :: clipped _NULL
 real, target :: days_since_start_of_the_year
 
 ! Information on additonal restarts (surface/bottom attached state)
-type(restart_file_type) :: restart
+type(restart_file_type) :: restart_2d
 
 integer      :: package_index
 logical,save :: module_initialized = .false.
@@ -574,8 +574,9 @@ subroutine ocean_fabm_sbc(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,        &
          T_prog(interior_state_indices(ivar))%triver(isc:iec,jsc:jec) = T_prog(interior_state_indices(ivar))%field(isc:iec,jsc:jec,1,taum1)
 
       ! stf is defined as bottom tracer flux [rho*m/sec*tracer concen] in ocean_types_mod.
-      ! Since MOM expects tracer concentration to be tracer quantity per seawater mass,
-      ! multiplication with rho (kg m-3) ensures it becomes tracer quantity per volume, as FABM uses internally.
+      ! Since MOM defines tracer concentration as tracer quantity per seawater mass [not volume!],
+      ! multiplication with rho (kg m-3) ensures it becomes tracer quantity per volume, as FABM already uses internally.
+      ! Therefore, we can directly copy the FABM's flux values.
       t_prog(interior_state_indices(ivar))%stf(isc:iec,jsc:jec) = surface_fluxes(isc:iec,jsc:jec,ivar)
    end do
 
@@ -701,7 +702,7 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
          missing_value = -1.0e+10)
    end do
 
-   ! Register local values anf domain-wide integrals of conserved quantities.
+   ! Register local values and domain-wide integrals of conserved quantities.
    allocate(inds_cons_tot(size(model%conserved_quantities)))
    allocate(inds_cons_ave(size(model%conserved_quantities)))
    do ivar=1,size(model%conserved_quantities)
@@ -745,7 +746,7 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    do ivar=1,size(model%state_variables)
       call model%link_interior_state_data(ivar,t_prog(interior_state_indices(ivar))%wrk1(isc:iec,jsc:jec,:))
    end do
-   
+
    allocate(bottom_state(isc:iec,jsc:jec,size(model%bottom_state_variables)))
    bottom_state = 0.0
    call model%link_all_bottom_state_data(bottom_state)
@@ -756,9 +757,10 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    call model%link_all_surface_state_data(surface_state)
    allocate(surface_state_indices(size(model%surface_state_variables)))
 
-   ! Add surface/bottom attached tracers to restart and load their data
+   ! Add surface/bottom attached tracers to 2D restart file.
+   ! Also make them available to he output system by registering them as diagnostics.
    do ivar=1,size(model%bottom_state_variables)
-      id_restart = register_restart_field(restart, default_2d_restart_file, trim(model%bottom_state_variables(ivar)%name), bottom_state(:,:,ivar), domain=mpp_domain2d)
+      id_restart = register_restart_field(restart_2d, default_2d_restart_file, trim(model%bottom_state_variables(ivar)%name), bottom_state(:,:,ivar), domain=mpp_domain2d)
       bottom_state_indices(ivar) = register_diag_field('ocean_model',             &
          trim(model%bottom_state_variables(ivar)%name), grid_tracer_axes(1:2), &
          model_time, trim(model%bottom_state_variables(ivar)%long_name),       &
@@ -766,16 +768,17 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
          missing_value = model%bottom_state_variables(ivar)%missing_value)
    end do
    do ivar=1,size(model%surface_state_variables)
-      id_restart = register_restart_field(restart, default_2d_restart_file, trim(model%surface_state_variables(ivar)%name), surface_state(:,:,ivar), domain=mpp_domain2d)
+      id_restart = register_restart_field(restart_2d, default_2d_restart_file, trim(model%surface_state_variables(ivar)%name), surface_state(:,:,ivar), domain=mpp_domain2d)
       surface_state_indices(ivar) = register_diag_field('ocean_model',             &
          trim(model%surface_state_variables(ivar)%name), grid_tracer_axes(1:2), &
          model_time, trim(model%surface_state_variables(ivar)%long_name),       &
          trim(model%surface_state_variables(ivar)%units),                       &
          missing_value = model%surface_state_variables(ivar)%missing_value)
    end do
-   call restore_state(restart)
 
-   !if (id_pres  /=-1) call model%link_interior_data(id_pres, Dens%pressure_at_depth (isc:iec,jsc:jec,:))
+   ! Load 2D state from restart file.
+   call restore_state(restart_2d)
+
    if (fabm_variable_needs_values(model,id_par)) call model%link_interior_data(id_par, t_diag(index_irr)%field(isc:iec,jsc:jec,:))
 
    call model%link_horizontal_data(standard_variables%surface_downwelling_shortwave_flux,               swflx(isc:iec,jsc:jec))
@@ -1001,7 +1004,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          end if
       end do
    end if
-   
+
    call mpp_clock_end(id_clock_fabm_conservation)
 
    do k = 1, nk  !{
@@ -1015,7 +1018,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          call fabm_get_light(model,1,nk,i-isc+1,j-jsc+1)
       end do
    end do
-   
+
    call mpp_clock_begin(id_clock_fabm_bottom)
 
    bottom_fluxes = 0.0
@@ -1049,7 +1052,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    end do  !} j
 
    call mpp_clock_end(id_clock_fabm_surface)
-   
+
    call mpp_clock_begin(id_clock_fabm_interior)
 
    do k = 1, nk  !{
@@ -1075,7 +1078,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
 
                ! Increment tracer tendency
                ! This is the change per time in (tracer per seawater mass), multiplied by density and layer thickness.
-               ! Note that (tracer per seawater mass)*density is tracer per volume, as FABM uses internally.
+               ! Note that (tracer per seawater mass)*density is tracer per volume, as FABM already uses internally.
                t_prog(interior_state_indices(ivar))%th_tendency(isc:iec,j,k) = t_prog(interior_state_indices(ivar))%th_tendency(isc:iec,j,k) &
                   + work_dy(isc:iec,ivar)*dzt(isc:iec,j,k)*grid_tmask(isc:iec,j,k)
             end do
@@ -1102,6 +1105,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
       end if
    end do
 
+   ! Save 2D state (surface- and bottom-attached state variables)
    do ivar=1,size(model%bottom_state_variables)
       if (bottom_state_indices(ivar) > 0) &
          used = send_data(bottom_state_indices(ivar), bottom_state(:,:,ivar), model_time, rmask = grid_tmask(isc:iec,jsc:jec,1))
@@ -1110,7 +1114,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
       if (surface_state_indices(ivar) > 0) &
          used = send_data(surface_state_indices(ivar), surface_state(:,:,ivar), model_time, rmask = grid_tmask(isc:iec,jsc:jec,1))
    end do
-   
+
    call mpp_clock_begin(id_clock_fabm_vert_mov)
 
    ! Vertical movement is applied with a first-order upwind scheme.
@@ -1321,11 +1325,11 @@ subroutine ocean_fabm_bbc(isc, iec, jsc, jec, isd, ied, jsd, jed, T_prog, grid_k
 
    do ivar=1,size(model%state_variables)
       ! btf is defined as bottom tracer flux [rho*m/sec*tracer concen] in ocean_types_mod.
-      ! Since MOM expects tracer concentration to be tracer quantity per seawater mass,
-      ! multiplication with rho (kg m-3) ensures it becomes tracer quantity per volume, as FABM uses internally.
+      ! Since MOM defines tracer concentration as tracer quantity per seawater mass [not volume!],
+      ! multiplication with rho (kg m-3) ensures it becomes tracer quantity per volume, as FABM already uses internally.
       ! Note: btf<0 means tracer entering the ocean (see e.g. geothermal heating implementation in ocean_bbc_mod),
       ! but FABM has bottom fluxes > 0 when entering the ocean. Hence the minus sign.
-      t_prog(interior_state_indices(ivar))%btf(isc:iec,jsc:jec) = -bottom_fluxes (isc:iec,jsc:jec,ivar)
+      t_prog(interior_state_indices(ivar))%btf(isc:iec,jsc:jec) = -bottom_fluxes(isc:iec,jsc:jec,ivar)
    end do
 
 end subroutine  ocean_fabm_bbc  !}
@@ -1368,7 +1372,7 @@ subroutine ocean_fabm_end(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,        &
         '==>Note from ' // trim(mod_name) // '(' // trim(sub_name) // '):'
 
    ! Save additional restart file with 2d state variables
-  call save_restart(restart)
+  call save_restart(restart_2d)
 end subroutine  ocean_fabm_end  !}
 ! </SUBROUTINE> NAME="ocean_fabm_end"
 
