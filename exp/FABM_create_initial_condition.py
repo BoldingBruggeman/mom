@@ -21,6 +21,7 @@ except ImportError:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('expdir', help='path to experiment directory', nargs='?', default='.')
+parser.add_argument('--rho', help='reference density of sea water (kg m-3)', type=float, default=1025.)
 args = parser.parse_args()
 
 model = pyfabm.Model(os.path.join(args.expdir, 'fabm.yaml'))
@@ -33,7 +34,7 @@ with open('fabm_init.nco', 'w') as f:
         # NB the initial value of interior state variable by a reference density 1025 kg m-3,
         # as MOM tracks tracer per seawater mass, rather than tracer per seawater volume as in FABM.
         print('  %s: %s' % (variable.output_name, variable.value))
-        f.write('%s=temp*0+%s/1025.;%s@long_name="%s";%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
+        f.write('%s=temp*0+%s/%s;%s@long_name="%s";%s@units="%s m3 kg-1";\n' % (variable.output_name, variable.value, args.rho, variable.output_name, variable.long_path, variable.output_name, variable.units))
 
 print('Creating 3D restart file...')
 subprocess.check_call(['ncap2', 'ocean_temp_salt.res.nc', 'ocean_fabm.res.nc', '-S', 'fabm_init.nco', '-O', '-v'])
