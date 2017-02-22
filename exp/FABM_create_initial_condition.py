@@ -33,7 +33,7 @@ with open('fabm_init.nco', 'w') as f:
         # NB the initial value of interior state variable by a reference density 1025 kg m-3,
         # as MOM tracks tracer per seawater mass, rather than tracer per seawater volume as in FABM.
         print('  %s: %s' % (variable.output_name, variable.value))
-        f.write('%s=temp*0+%s/1025.;\n%s@long_name="%s";\n%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
+        f.write('%s=temp*0+%s/1025.;%s@long_name="%s";%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
 
 print('Creating 3D restart file...')
 subprocess.check_call(['ncap2', 'ocean_temp_salt.res.nc', 'ocean_fabm.res.nc', '-S', 'fabm_init.nco', '-O', '-v'])
@@ -43,10 +43,10 @@ print('Writing NCO script file for 2D fields:')
 with open('fabm_init_2d.nco', 'w') as f:
     for variable in model.bottom_state_variables:
         print('  %s: %s' % (variable.output_name, variable.value))
-        f.write('%s=temp(:,0,:,:)*0+%s;\n%s@long_name="%s";\n%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
+        f.write('%s=temp(:,0,:,:)*0+%s;%s@long_name="%s";%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
     for variable in model.surface_state_variables:
         print('  %s: %s' % (variable.output_name, variable.value))
-        f.write('%s=temp(:,0,:,:)*0+%s;\n%s@long_name="%s";\n%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
+        f.write('%s=temp(:,0,:,:)*0+%s;%s@long_name="%s";%s@units="%s";\n' % (variable.output_name, variable.value, variable.output_name, variable.long_path, variable.output_name, variable.units))
 
 print('Creating 2D restart file...')
 subprocess.check_call(['ncap2', 'ocean_temp_salt.res.nc', 'ocean_fabm_2d.res.nc', '-S', 'fabm_init_2d.nco', '-O', '-v'])
