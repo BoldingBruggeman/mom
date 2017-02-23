@@ -432,7 +432,7 @@ subroutine ocean_fabm_init  !{
          !min_tracer = model%state_variables(ivar)%minimum,          &
          !max_tracer = model%state_variables(ivar)%maximum,          &
          const_init_tracer = .true.,                                 &
-         const_init_value = model%state_variables(ivar)%initial_value)
+         const_init_value = model%state_variables(ivar)%initial_value/1025)
    end do
 
 !  call fm_util_end_namelist(package_name, '*global*', caller = caller_str)
