@@ -777,7 +777,7 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    end do
 
    ! Load 2D state from restart file.
-   call restore_state(restart_2d)
+   if (size(model%bottom_state_variables)>0 .or. size(model%surface_state_variables)>0) call restore_state(restart_2d)
 
    if (fabm_variable_needs_values(model,id_par)) call model%link_interior_data(id_par, t_diag(index_irr)%field(isc:iec,jsc:jec,:))
 
@@ -1372,7 +1372,7 @@ subroutine ocean_fabm_end(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,        &
         '==>Note from ' // trim(mod_name) // '(' // trim(sub_name) // '):'
 
    ! Save additional restart file with 2d state variables
-  call save_restart(restart_2d)
+   if (size(model%bottom_state_variables)>0 .or. size(model%surface_state_variables)>0) call save_restart(restart_2d)
 end subroutine  ocean_fabm_end  !}
 ! </SUBROUTINE> NAME="ocean_fabm_end"
 
