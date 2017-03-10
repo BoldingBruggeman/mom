@@ -79,7 +79,7 @@ def run(expdir, rho=1025., custom={}):
     print('Writing chlorophyll restart (all 0): ocean_chl.res.nc')
     with netCDF4.Dataset(os.path.join(expdir, 'INPUT/ocean_chl.res.nc'), 'w') as ncchl:
         copy_dimensions(nc_ts, ncchl, dimensions_3d)
-    ncvar = ncchl.createVariable('chl', dtype, dimensions_3d)
+        ncvar = ncchl.createVariable('chl', dtype, dimensions_3d)
         ncvar[...] = 0.
 
     print('Writing irradiance restart (all 0): ocean_irr.res.nc')
