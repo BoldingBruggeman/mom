@@ -210,7 +210,7 @@ logical, public :: do_ocean_fabm
 !----------------------------------------------------------------------
 !
 
-type (type_model) :: model
+class (type_fabm_model), pointer :: model
 
 ! MOM-FABM namelist parameters
 logical :: inplace_repair
@@ -219,11 +219,11 @@ logical :: disable_sources
 logical :: disable_vertical_movement
 
 ! Identifiers for environmental depenendeices provided by MOM
-type (type_bulk_variable_id) :: id_temp
-type (type_bulk_variable_id) :: id_salt
-type (type_bulk_variable_id) :: id_pres
-type (type_bulk_variable_id) :: id_par
-type (type_bulk_variable_id) :: id_dens
+type (type_fabm_interior_variable_id) :: id_temp
+type (type_fabm_interior_variable_id) :: id_salt
+type (type_fabm_interior_variable_id) :: id_pres
+type (type_fabm_interior_variable_id) :: id_par
+type (type_fabm_interior_variable_id) :: id_dens
 
 ! Indices of prognostic variables (i.e., index in T_prog for each interior state variable)
 integer,_ALLOCATABLE,dimension(:) :: interior_state_indices
@@ -340,7 +340,7 @@ subroutine ocean_fabm_flux_init  !{
       ! Read FABM configuration from fabm.yaml.
       configuration_file = fm_util_get_string ('configuration_file', caller = caller_str, scalar = .true.)
       call mpp_open(yaml_unit, configuration_file, action=MPP_RDONLY )
-      call fabm_create_model_from_yaml_file(model,unit=yaml_unit)
+      model => fabm_create_model(unit=yaml_unit)
       call close_file (yaml_unit)
    endif
 
@@ -414,36 +414,36 @@ subroutine ocean_fabm_init  !{
    ! Read FABM configuration from fabm.yaml.
    configuration_file = fm_util_get_string('configuration_file', caller = caller_str, scalar = .true.)
    call mpp_open(yaml_unit, configuration_file, action=MPP_RDONLY )
-   call fabm_create_model_from_yaml_file(model,unit=yaml_unit)
+   model => fabm_create_model(unit=yaml_unit)
    call close_file(yaml_unit)
 
    ! Register interior biogeochemical state variables
-   allocate(interior_state_indices(size(model%state_variables)))
-   do ivar=1,size(model%state_variables)
+   allocate(interior_state_indices(size(model%interior_state_variables)))
+   do ivar=1,size(model%interior_state_variables)
       interior_state_indices(ivar) = otpm_set_prog_tracer(           &
-         trim(model%state_variables(ivar)%name),                     &
+         trim(model%interior_state_variables(ivar)%name),                     &
          package_name,                                               &
-         longname = trim(model%state_variables(ivar)%long_name),     &
-         units = trim(model%state_variables(ivar)%units)//' m3 kg-1',&
-         flux_units = trim(model%state_variables(ivar)%units)//'/s', &
+         longname = trim(model%interior_state_variables(ivar)%long_name),     &
+         units = trim(model%interior_state_variables(ivar)%units)//' m3 kg-1',&
+         flux_units = trim(model%interior_state_variables(ivar)%units)//'/s', &
          caller = trim(mod_name)//'('//trim(sub_name)//')',          &
-         min_tracer_limit = model%state_variables(ivar)%minimum,     &
-         max_tracer_limit = model%state_variables(ivar)%maximum,     &
-         !min_tracer = model%state_variables(ivar)%minimum,          &
-         !max_tracer = model%state_variables(ivar)%maximum,          &
+         min_tracer_limit = model%interior_state_variables(ivar)%minimum,     &
+         max_tracer_limit = model%interior_state_variables(ivar)%maximum,     &
+         !min_tracer = model%interior_state_variables(ivar)%minimum,          &
+         !max_tracer = model%interior_state_variables(ivar)%maximum,          &
          const_init_tracer = .true.,                                 &
-         const_init_value = model%state_variables(ivar)%initial_value/1025)
+         const_init_value = model%interior_state_variables(ivar)%initial_value/1025)
    end do
 
 !  call fm_util_end_namelist(package_name, '*global*', caller = caller_str)
    call fm_util_end_namelist('', package_name, check = .true., caller = caller_str)
 
    ! Obtain ids of environmental variables that MOM can provide
-   id_temp = fabm_get_bulk_variable_id(model,standard_variables%temperature)
-   id_salt = fabm_get_bulk_variable_id(model,standard_variables%practical_salinity)
-   id_pres = fabm_get_bulk_variable_id(model,standard_variables%pressure)
-   id_dens = fabm_get_bulk_variable_id(model,standard_variables%density)
-   id_par  = fabm_get_bulk_variable_id(model,standard_variables%downwelling_photosynthetic_radiative_flux)
+   id_temp = model%get_interior_variable_id(fabm_standard_variables%temperature)
+   id_salt = model%get_interior_variable_id(fabm_standard_variables%practical_salinity)
+   id_pres = model%get_interior_variable_id(fabm_standard_variables%pressure)
+   id_dens = model%get_interior_variable_id(fabm_standard_variables%density)
+   id_par  = model%get_interior_variable_id(fabm_standard_variables%downwelling_photosynthetic_radiative_flux)
 
 !
 !       Check for any errors in the number of fields in the namelists for this package
@@ -567,10 +567,10 @@ subroutine ocean_fabm_sbc(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,        &
 
    integer :: ivar
 
-   do ivar=1,size(model%state_variables)
-      if (model%state_variables(ivar)%no_precipitation_dilution) &
+   do ivar=1,size(model%interior_state_variables)
+      if (model%interior_state_variables(ivar)%no_precipitation_dilution) &
          T_prog(interior_state_indices(ivar))%tpme  (isc:iec,jsc:jec) = T_prog(interior_state_indices(ivar))%field(isc:iec,jsc:jec,1,taum1)
-      if ((.not.zero_river_concentration).and.model%state_variables(ivar)%no_river_dilution) &
+      if ((.not.zero_river_concentration).and.model%interior_state_variables(ivar)%no_river_dilution) &
          T_prog(interior_state_indices(ivar))%triver(isc:iec,jsc:jec) = T_prog(interior_state_indices(ivar))%field(isc:iec,jsc:jec,1,taum1)
 
       ! stf is defined as bottom tracer flux [rho*m/sec*tracer concen] in ocean_types_mod.
@@ -671,14 +671,14 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    call fm_util_end_namelist('', package_name, caller = caller_str)
 
    ! Register diagnostic variables defined on interior model domain.
-   allocate(interior_diagnostic_indices(size(model%diagnostic_variables)))
-   do ivar=1,size(model%diagnostic_variables)
+   allocate(interior_diagnostic_indices(size(model%interior_diagnostic_variables)))
+   do ivar=1,size(model%interior_diagnostic_variables)
       interior_diagnostic_indices(ivar) = register_diag_field('ocean_model',      &
-         trim(model%diagnostic_variables(ivar)%name), grid_tracer_axes(1:3),                       &
-         model_time, trim(model%diagnostic_variables(ivar)%long_name), &
-         trim(model%diagnostic_variables(ivar)%units),            &
-         missing_value = model%diagnostic_variables(ivar)%missing_value)
-      model%diagnostic_variables(ivar)%save = interior_diagnostic_indices(ivar)/=-1
+         trim(model%interior_diagnostic_variables(ivar)%name), grid_tracer_axes(1:3),                       &
+         model_time, trim(model%interior_diagnostic_variables(ivar)%long_name), &
+         trim(model%interior_diagnostic_variables(ivar)%units),            &
+         missing_value = model%interior_diagnostic_variables(ivar)%missing_value)
+      model%interior_diagnostic_variables(ivar)%save = interior_diagnostic_indices(ivar)/=-1
    end do
 
    ! Register diagnostic variables defined on horizontal slice of domain.
@@ -693,12 +693,12 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    end do
 
    ! Register clipping diagnostic (increase/time) for interior state variables.
-   allocate(inds_clip(size(model%state_variables)))
-   do ivar=1,size(model%state_variables)
+   allocate(inds_clip(size(model%interior_state_variables)))
+   do ivar=1,size(model%interior_state_variables)
       inds_clip(ivar) = register_diag_field('ocean_model',      &
-         trim(model%state_variables(ivar)%name)//'_clip', grid_tracer_axes(1:3),                       &
-         model_time, trim(model%state_variables(ivar)%long_name)//' clipping increase', &
-         trim(model%state_variables(ivar)%units),            &
+         trim(model%interior_state_variables(ivar)%name)//'_clip', grid_tracer_axes(1:3),                       &
+         model_time, trim(model%interior_state_variables(ivar)%long_name)//' clipping increase', &
+         trim(model%interior_state_variables(ivar)%units),            &
          missing_value = -1.0e+10)
    end do
 
@@ -718,9 +718,8 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
          missing_value = -1.0e+10)
    end do
 
-   call fabm_set_domain(model,iec-isc+1,jec-jsc+1,nk)
-   call fabm_set_mask(model,grid_tmask(isc:iec,jsc:jec,:),grid_tmask(isc:iec,jsc:jec,1))
-   call model%set_surface_index(1)
+   call model%set_domain(iec-isc+1,jec-jsc+1,nk)
+   call model%set_mask(grid_tmask(isc:iec,jsc:jec,:),grid_tmask(isc:iec,jsc:jec,1))
    call model%set_bottom_index(grid_kmt(isc:iec,jsc:jec))
 
    write(stdout(),*)
@@ -729,11 +728,11 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
 
    allocate(clipped(isc:iec,jsc:jec,nk))
 
-   allocate(work_dy(isc:iec,     size(model%state_variables)))
+   allocate(work_dy(isc:iec,     size(model%interior_state_variables)))
    allocate(work_dy_sf(isc:iec,  size(model%surface_state_variables)))
    allocate(work_dy_bt(isc:iec,  size(model%bottom_state_variables)))
-   allocate(w      (isc:iec,nk+1,size(model%state_variables)))
-   allocate(adv    (        nk+1,size(model%state_variables)))
+   allocate(w      (isc:iec,nk+1,size(model%interior_state_variables)))
+   allocate(adv    (        nk+1,size(model%interior_state_variables)))
    if (any(inds_cons_tot>0).or.any(inds_cons_ave>0)) then
       allocate(work_cons(isd:ied,size(model%conserved_quantities)))
       work_cons = 0
@@ -743,7 +742,7 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    ! We create a copy of the biogeochemical state as maintained by MOM, in order to
    ! - convert tracer per seawater mass (MOM) to tracer per volume (FABM) by multiplying with density
    ! - allow us to repair the state (ensure that FABM sees valid values) while not affecting [clipping] the mass in the system.
-   do ivar=1,size(model%state_variables)
+   do ivar=1,size(model%interior_state_variables)
       call model%link_interior_state_data(ivar,t_prog(interior_state_indices(ivar))%wrk1(isc:iec,jsc:jec,:))
    end do
 
@@ -779,16 +778,16 @@ subroutine ocean_fabm_start(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,      &
    ! Load 2D state from restart file.
    if (size(model%bottom_state_variables)>0 .or. size(model%surface_state_variables)>0) call restore_state(restart_2d)
 
-   if (fabm_variable_needs_values(model,id_par)) call model%link_interior_data(id_par, t_diag(index_irr)%field(isc:iec,jsc:jec,:))
+   if (model%variable_needs_values(id_par)) call model%link_interior_data(id_par, t_diag(index_irr)%field(isc:iec,jsc:jec,:))
 
-   call model%link_horizontal_data(standard_variables%surface_downwelling_shortwave_flux,               swflx(isc:iec,jsc:jec))
-   call model%link_horizontal_data(standard_variables%surface_downwelling_photosynthetic_radiative_flux,swflx_vis(isc:iec,jsc:jec))
-   call model%link_horizontal_data(standard_variables%bottom_stress,                                    current_wave_stress(isc:iec,jsc:jec))
-   call model%link_interior_data  (standard_variables%cell_thickness,                                   dzt(isc:iec,jsc:jec,:))
-   call model%link_horizontal_data(standard_variables%longitude,                                        grid_xt(isc:iec,jsc:jec))
-   call model%link_horizontal_data(standard_variables%latitude,                                         grid_yt(isc:iec,jsc:jec))
-   call model%link_horizontal_data(standard_variables%bottom_depth_below_geoid,                         grid_ht(isc:iec,jsc:jec))
-   call model%link_scalar         (standard_variables%number_of_days_since_start_of_the_year,           days_since_start_of_the_year)
+   call model%link_horizontal_data(fabm_standard_variables%surface_downwelling_shortwave_flux,               swflx(isc:iec,jsc:jec))
+   call model%link_horizontal_data(fabm_standard_variables%surface_downwelling_photosynthetic_radiative_flux,swflx_vis(isc:iec,jsc:jec))
+   call model%link_horizontal_data(fabm_standard_variables%bottom_stress,                                    current_wave_stress(isc:iec,jsc:jec))
+   call model%link_interior_data  (fabm_standard_variables%cell_thickness,                                   dzt(isc:iec,jsc:jec,:))
+   call model%link_horizontal_data(fabm_standard_variables%longitude,                                        grid_xt(isc:iec,jsc:jec))
+   call model%link_horizontal_data(fabm_standard_variables%latitude,                                         grid_yt(isc:iec,jsc:jec))
+   call model%link_horizontal_data(fabm_standard_variables%bottom_depth_below_geoid,                         grid_ht(isc:iec,jsc:jec))
+   call model%link_scalar         (fabm_standard_variables%number_of_days_since_start_of_the_year,           days_since_start_of_the_year)
 
 end subroutine  ocean_fabm_start  !}
 ! </SUBROUTINE> NAME="ocean_fabm_start"
@@ -865,7 +864,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    days_since_start_of_the_year = days + seconds/SECONDS_PER_DAY
 
    ! Convert tracer per seawater mass (MOM) to tracer per volume (FABM) by multiplying with density (kg m-3)
-   do ivar=1,size(model%state_variables)
+   do ivar=1,size(model%interior_state_variables)
       t_prog(interior_state_indices(ivar))%wrk1(isc:iec,jsc:jec,:) = t_prog(interior_state_indices(ivar))%field(isc:iec,jsc:jec,:,taum1)*Dens%rho(isc:iec,jsc:jec,:,taum1)
    end do
 
@@ -889,7 +888,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          forcing_3d%name = 'fabm_'//trim(model%dependencies(ivar))
          call data_override('OCN', forcing_3d%name, forcing_3d%data, model_time, override=used )
          if (used) then
-            call model%link_interior_data(fabm_get_bulk_variable_id(model,model%dependencies(ivar)),forcing_3d%data,source=data_source_user)
+            call model%link_interior_data(model%get_interior_variable_id(model%dependencies(ivar)),forcing_3d%data,source=data_source_user)
             forcing_3d%next => first_forcing_3d
             first_forcing_3d => forcing_3d
             allocate(forcing_3d)
@@ -905,7 +904,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          forcing_2d%name = 'fabm_'//trim(model%dependencies_hz(ivar))
          call data_override('OCN', forcing_2d%name, forcing_2d%data, model_time, override=used )
          if (used) then
-            call model%link_horizontal_data(fabm_get_horizontal_variable_id(model,model%dependencies_hz(ivar)),forcing_2d%data,source=data_source_user)
+            call model%link_horizontal_data(model%get_horizontal_variable_id(model%dependencies_hz(ivar)),forcing_2d%data,source=data_source_user)
             forcing_2d%next => first_forcing_2d
             first_forcing_2d => forcing_2d
             allocate(forcing_2d)
@@ -915,7 +914,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
       deallocate(forcing_2d)
 
       ! Make sure FABM has all dependencies fulfilled.
-      call fabm_check_ready(model)
+      call model%start()
 
       initialization_complete = .true.
    end if
@@ -939,17 +938,17 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    ! Repair biogeochemical state at the start of the time step.
    ! This modifies the data we sent to link_interior_state_data in-place!
    do j = jsc, jec  !{
-      call fabm_check_surface_state(model,1,iec-isc+1,j-jsc+1,.true.,valid)
-      call fabm_check_bottom_state(model,1,iec-isc+1,j-jsc+1,.true.,valid)
+      call model%check_surface_state(1,iec-isc+1,j-jsc+1,.true.,valid)
+      call model%check_bottom_state(1,iec-isc+1,j-jsc+1,.true.,valid)
    end do
    do k = 1, nk  !{
       do j = jsc, jec  !{
-         call fabm_check_state(model,1,iec-isc+1,j-jsc+1,k,.true.,valid)
+         call model%check_interior_state(1,iec-isc+1,j-jsc+1,k,.true.,valid)
       end do
    end do
 
    ! Send per-grid-point, per-variable clipping-induced change to diagnostic manager
-   do ivar=1,size(model%state_variables)
+   do ivar=1,size(model%interior_state_variables)
       if (inds_clip(ivar)>0) then
          ! Compute value change due to clipping
          clipped(isc:iec,jsc:jec,:) = t_prog(interior_state_indices(ivar))%wrk1(isc:iec,jsc:jec,:) - t_prog(interior_state_indices(ivar))%field(isc:iec,jsc:jec,:,taum1)*Dens%rho(isc:iec,jsc:jec,:,taum1)
@@ -966,7 +965,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
       total_tracer = 0.0
       do k = 1, nk  !{
          do j = jsc, jec  !{
-            call fabm_get_conserved_quantities(model,1,iec-isc+1,j-jsc+1,k,work_cons(isc:iec,:))
+            call model%get_interior_conserved_quantities(1,iec-isc+1,j-jsc+1,k,work_cons(isc:iec,:))
             do ivar=1,size(model%conserved_quantities)
                if (inds_cons_tot(ivar)>0.or.inds_cons_ave(ivar)>0) &
                   total_tracer(ivar) = total_tracer(ivar) + sum(grid_tmask(:,j,k)*grid_dat(:,j)*work_cons(:,ivar)*dzt(:,j,k))
@@ -974,7 +973,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          end do
       end do
       do j = jsc, jec  !{
-         call fabm_get_horizontal_conserved_quantities(model,1,iec-isc+1,j-jsc+1,work_cons(isc:iec,:))
+         call model%get_horizontal_conserved_quantities(1,iec-isc+1,j-jsc+1,work_cons(isc:iec,:))
          do ivar=1,size(model%conserved_quantities)
             if (inds_cons_tot(ivar)>0.or.inds_cons_ave(ivar)>0) &
                total_tracer(ivar) = total_tracer(ivar) + sum(grid_tmask(:,j,1)*grid_dat(:,j)*work_cons(:,ivar))
@@ -1007,24 +1006,14 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
 
    call mpp_clock_end(id_clock_fabm_conservation)
 
-   do k = 1, nk  !{
-      do j = jsc, jec  !{
-         call fabm_get_light_extinction(model,1,iec-isc+1,j-jsc+1,k,work_dy(isc:iec,1))
-      end do
-   end do
-
-   do j = jsc, jec  !{
-      do i = isc, iec  !{
-         call fabm_get_light(model,1,nk,i-isc+1,j-jsc+1)
-      end do
-   end do
+   call model%prepare_inputs()
 
    call mpp_clock_begin(id_clock_fabm_bottom)
 
    bottom_fluxes = 0.0
    do j = jsc, jec  !{
       work_dy_bt = 0.0
-      call fabm_do_bottom(model,1,iec-isc+1,j-jsc+1,bottom_fluxes(isc:iec,j,:),work_dy_bt(isc:iec,:))
+      call model%get_bottom_sources(1,iec-isc+1,j-jsc+1,bottom_fluxes(isc:iec,j,:),work_dy_bt(isc:iec,:))
       if (any(isnan(bottom_fluxes(isc:iec,j,:)))) then
          call mpp_error(FATAL,trim(error_header) // ' NaN in FABM bottom fluxes.')
       end if
@@ -1041,7 +1030,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    surface_fluxes = 0.0
    do j = jsc, jec  !{
       work_dy_sf = 0.0
-      call fabm_do_surface(model,1,iec-isc+1,j-jsc+1,surface_fluxes(isc:iec,j,:),work_dy_sf(isc:iec,:))
+      call model%get_surface_sources(1,iec-isc+1,j-jsc+1,surface_fluxes(isc:iec,j,:),work_dy_sf(isc:iec,:))
       if (any(isnan(surface_fluxes(isc:iec,j,:)))) then
          call mpp_error(FATAL,trim(error_header) // ' NaN in FABM surface fluxes.')
       end if
@@ -1061,14 +1050,14 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
          ! Initialize derivatives to zero, because FABM will increment/decrement values rather than set them.
          work_dy = 0.0
 
-         call fabm_do(model,1,iec-isc+1,j-jsc+1,k,work_dy(isc:iec,:))
+         call model%get_interior_sources(1,iec-isc+1,j-jsc+1,k,work_dy(isc:iec,:))
          if (any(isnan(work_dy(isc:iec,:)))) then
             call mpp_error(FATAL,trim(error_header) // ' NaN in FABM sink/source terms.')
          end if
 
          if (.not.disable_sources) then
             ! Update tendencies with current sink and source terms.
-            do ivar=1,size(model%state_variables)
+            do ivar=1,size(model%interior_state_variables)
                if (inplace_repair) then
                   ! We need to repair the actual state [clipping = non-conservative!], not only the strate as seen by the biogeochemical models.
                   ! Add clipping difference divided by time step as tracer source term
@@ -1089,10 +1078,12 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
 
    call mpp_clock_end(id_clock_fabm_interior)
 
+   call model%finalize_outputs()
+   
    ! Save interior diagnostic variables.
-   do ivar=1,size(model%diagnostic_variables)
+   do ivar=1,size(model%interior_diagnostic_variables)
       if (interior_diagnostic_indices(ivar) > 0) then
-         used = send_data(interior_diagnostic_indices(ivar), fabm_get_interior_diagnostic_data(model,ivar), &
+         used = send_data(interior_diagnostic_indices(ivar), model%get_interior_diagnostic_data(ivar), &
             model_time, rmask = grid_tmask(isc:iec,jsc:jec,:))
       end if
    end do
@@ -1100,7 +1091,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    ! Save horizontal diagnostic variables.
    do ivar=1,size(model%horizontal_diagnostic_variables)
       if (horizontal_diagnostic_indices(ivar) > 0) then
-         used = send_data(horizontal_diagnostic_indices(ivar), fabm_get_horizontal_diagnostic_data(model,ivar), &
+         used = send_data(horizontal_diagnostic_indices(ivar), model%get_horizontal_diagnostic_data(ivar), &
             model_time, rmask = grid_tmask(isc:iec,jsc:jec,1))
       end if
    end do
@@ -1121,14 +1112,14 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
    do j = jsc, jec
       ! For every i: get sinking speed in cell centers, over entire column, for all state variables.
       do k=1,nk
-         call fabm_get_vertical_movement(model,1,iec-isc+1,j-jsc+1,k,w(:,k,:))
+         call model%get_vertical_movement(1,iec-isc+1,j-jsc+1,k,w(:,k,:))
       end do
 
       do i = isc, iec
          if (grid_tmask(i,j,1)/=1.) cycle
 
          ! Interpolate to sinking speed (m s-1) at interfaces
-         do ivar=1,size(model%state_variables)
+         do ivar=1,size(model%interior_state_variables)
             w(i,2:grid_kmt(i,j),ivar) = (w(i,2:grid_kmt(i,j),ivar) + w(i,1:grid_kmt(i,j)-1,ivar))/2
          end do
          w(i,1,              :) = 0.0   ! Surface boundary condition
@@ -1136,7 +1127,7 @@ subroutine ocean_fabm_source(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,     &
 
          adv = 0.0
 
-         do ivar=1,size(model%state_variables)
+         do ivar=1,size(model%interior_state_variables)
 
             ! Get upstream-biased tracer flux at all interfaces.
             do k=2,grid_kmt(i,j)
@@ -1235,10 +1226,10 @@ subroutine ocean_fabm_init_sfc(isc, iec, jsc, jec, nk, isd, ied, jsd, jed,   &
    character(len=256), parameter   :: note_header =                                &
         '==>Note from ' // trim(mod_name) // '(' // trim(sub_name) // '):'
 
-  allocate(surface_fluxes(isc:iec,jsc:jec,1:size(model%state_variables)))
+  allocate(surface_fluxes(isc:iec,jsc:jec,1:size(model%interior_state_variables)))
   surface_fluxes = 0.0
 
-  allocate(bottom_fluxes(isc:iec,jsc:jec,1:size(model%state_variables)))
+  allocate(bottom_fluxes(isc:iec,jsc:jec,1:size(model%interior_state_variables)))
   bottom_fluxes = 0.0
 
 end subroutine ocean_fabm_init_sfc  !}
@@ -1323,7 +1314,7 @@ subroutine ocean_fabm_bbc(isc, iec, jsc, jec, isd, ied, jsd, jed, T_prog, grid_k
 
    integer :: ivar
 
-   do ivar=1,size(model%state_variables)
+   do ivar=1,size(model%interior_state_variables)
       ! btf is defined as bottom tracer flux [rho*m/sec*tracer concen] in ocean_types_mod.
       ! Since MOM defines tracer concentration as tracer quantity per seawater mass [not volume!],
       ! multiplication with rho (kg m-3) ensures it becomes tracer quantity per volume, as FABM already uses internally.
