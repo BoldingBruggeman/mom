@@ -106,7 +106,6 @@ use ocean_types_mod,    only: ocean_prog_tracer_type, ocean_diag_tracer_type, oc
 
 use fabm
 use fabm_types
-use fabm_config
 use fabm_driver
 
 !
