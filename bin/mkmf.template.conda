@@ -96,7 +96,7 @@ ifeq ($(NETCDF),3)
 endif
 
 LIBS := $(shell nf-config --flibs) -lmpl -lpthread  #-L/net2/nnz/opt/mpich2-1.3_ifort11_x64/lib -lmpich
-LIBS += -L$(HOME)/local/fabm/mom5/lib -lfabm -ladj
+LIBS += -L$(HOME)/local/fabm/mom5/lib -lfabm
 #$(shell pkg-config --libs mpich2-f90) #does not work
 LDFLAGS += $(LIBS)
 
