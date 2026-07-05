@@ -23,8 +23,8 @@ jobs:
           uses: conda-incubator/setup-miniconda@v4
           with:
             auto-update-conda: true
-          channels: conda-forge
-          conda-remove-defaults: "true"
+            channels: conda-forge
+            conda-remove-defaults: "true"
         - name: Install packages
           run: conda install gfortran netcdf-fortran cmake ninja
         - name: Compile FABM
