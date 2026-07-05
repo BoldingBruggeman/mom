@@ -12,6 +12,10 @@ jobs:
          run:
             shell: "bash -el {0}"
       steps:
+        - name: add csh
+          run: |
+            sudo apt-get update
+            sudo apt-get install csh
         - name: Clone
           uses: actions/checkout@v7
         - name: Clone FABM
