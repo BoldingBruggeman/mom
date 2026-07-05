@@ -1,0 +1,13 @@
+diff --git a/exp/MOM_compile.csh b/exp/MOM_compile.csh
+index b2ccc9fc..49380197 100755
+--- a/exp/MOM_compile.csh
++++ b/exp/MOM_compile.csh
+@@ -67,7 +67,7 @@ source $root/bin/environs.$platform  # environment variables and loadable module
+ #
+ # compile mppnccombine.c, needed only if $npes > 1
+   if ( ! -f $mppnccombine ) then
+-    cc -O -o $mppnccombine -I/usr/local/include -L/usr/local/lib $code_dir/postprocessing/mppnccombine/mppnccombine.c -lnetcdf
++    cc -O -Wno-implicit-function-declaration -o $mppnccombine -I${netcdf3_inc_dir} -L${netcdf3_lib_dir} $code_dir/postprocessing/mppnccombine/mppnccombine.c -lm -lnetcdf
+   endif
+ 
+ 

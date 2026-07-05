@@ -1,0 +1,39 @@
+name: Build and test
+on:
+  push:
+    branches:
+    - "**"
+  pull_request:
+jobs:
+   gfortran:
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+      runs-on: "ubuntu-latest"
+      defaults:
+         run:
+            shell: "bash -el {0}"
+      steps:
+         - name: Clone
+           uses: actions/checkout@v7
+         - name: Clone FABM
+           uses:actions/checkout@v7
+           with:
+              repository: fabm-model/fabm
+              path: fabm
+         - name: Setup miniconda
+            uses: conda-incubator/setup-miniconda@v4
+            with:
+                auto-update-conda: true
+                channels: conda-forge
+                conda-remove-defaults: "true"
+         - name: Install packages
+           run: conda install gfortran netcdf-fortran cmake ninja
+         - name: Compile FABM
+           run: |
+             cmake -S fabm -B fabm/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DFABM_HOST=mom5 -DCMAKE_Fortran_COMPILER=gfortran 
+             cmake --build fabm/build -t install
+         - name: Apply patch
+           run: patch -p1 < .github/workflows/gfortran.patch
+         - name: Compile MOM5 with FABM support
+           run: |
+             cd exp
+             ./MOM_compile.csh --type MOM_SIS --platform conda
