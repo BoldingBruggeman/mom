@@ -41,3 +41,23 @@ jobs:
           run: |
             cd exp
             ./MOM_compile.csh --type MOM_SIS --platform conda
+        - name: download and extract MOM_SIS_BLING input data
+          run: |
+            mkdir work
+            cd work
+            wget http://portal.sf.utas.edu.au/thredds/fileServer/momtest/test_data/MOM_SIS_BLING.input.tar.gz
+            tar -xvf MOM_SIS_BLING.input.tar.gz
+        - name: Run MOM5
+          run: |
+            cd exp
+            ./MOM_run.csh --type MOM_SIS --experiment MOM_SIS_BLING --platform conda --npes 1
+        - name: Run MOM5 with FABM
+          run: |
+            cd exp
+            cat >> ../work/MOM_SIS_BLING/INPUT/field_table <<EOL
+            "tracer_packages", "ocean_mod", "ocean_fabm"
+              use=.true.
+            /
+            EOL
+            cp ../fabm/testcases/fabm-gotm-npzd.yaml ../work/MOM_SIS_BLING/fabm.yaml
+            ./MOM_run.csh --type MOM_SIS --experiment MOM_SIS_BLING --platform conda --npes 1
