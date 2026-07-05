@@ -30,7 +30,7 @@ jobs:
             channels: conda-forge
             conda-remove-defaults: "true"
         - name: Install packages
-          run: conda install gfortran netcdf-fortran cmake ninja
+          run: conda install gfortran netcdf-fortran cmake ninja mpi mpich
         - name: Compile FABM
           run: |
             cmake -S fabm -B fabm/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DFABM_HOST=mom5 -DCMAKE_Fortran_COMPILER=gfortran 
