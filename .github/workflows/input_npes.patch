@@ -1,0 +1,11 @@
+--- a/work/MOM_SIS_BLING/INPUT/input.nml	2009-12-22 19:19:42.000000000 +0100
++++ b/work/MOM_SIS_BLING/INPUT/input.nml	2026-07-05 18:13:51.028570389 +0200
+@@ -255,7 +255,7 @@
+ 
+  &ocean_model_nml
+       dt_ocean = 14400,
+-      layout=6,4
++      layout=1,1 !6,4
+       time_tendency='twolevel'
+       vertical_coordinate='pstar'
+       baroclinic_split = 2
