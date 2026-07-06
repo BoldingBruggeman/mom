@@ -57,7 +57,7 @@ jobs:
           run: |
             cd exp
             cat >> ../work/MOM_SIS_BLING/INPUT/field_table <<EOL
-            "tracer_packages", "ocean_mod", "ocean_fabm"
+            "namelists", "ocean_mod", "ocean_fabm"
               use=.true.
             /
             EOL
