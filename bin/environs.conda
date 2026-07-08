@@ -1,0 +1,7 @@
+         setenv NC_BLKSZ 64K 
+         setenv FMS_ARCHIVE /archive/fms
+         setenv PATH "${PATH}:."
+         setenv netcdf3_inc_dir "${CONDA_PREFIX}/include"
+         setenv netcdf3_lib_dir "${CONDA_PREFIX}/lib"
+         setenv mpirunCommand   "mpirun -np"
+
