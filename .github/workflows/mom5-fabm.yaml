@@ -55,7 +55,7 @@ jobs:
             ./MOM_run.csh --type MOM_SIS --experiment MOM_SIS_BLING --platform conda --npes 1
         - name: Set up Python for FABM preprocessing tools
           run: |
-            conda install python netcdf4
+            conda install python netcdf4 pip
             python -m pip install -v ./fabm
         - name: Configure MOM5 for FABM
           run: |
