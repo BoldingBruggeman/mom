@@ -56,7 +56,7 @@ jobs:
         - name: Set up Python for FABM preprocessing tools
           run: |
             conda install python netcdf4
-            pip install -v ./fabm
+            python -m pip install -v ./fabm
         - name: Configure MOM5 for FABM
           run: |
             cat >> work/MOM_SIS_BLING/INPUT/field_table <<EOL
