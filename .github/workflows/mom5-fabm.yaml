@@ -66,6 +66,7 @@ jobs:
             EOL
             cp fabm/testcases/fabm-gotm-npzd.yaml work/MOM_SIS_BLING/fabm.yaml
             exp/FABM_create_initial_condition.py work/MOM_SIS_BLING
+            exp/FABM_create_diag_table.py work/MOM_SIS_BLING
         - name: Run MOM5 with FABM
           run: |
             cd exp
