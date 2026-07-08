@@ -53,13 +53,20 @@ jobs:
           run: |
             cd exp
             ./MOM_run.csh --type MOM_SIS --experiment MOM_SIS_BLING --platform conda --npes 1
-        - name: Run MOM5 with FABM
+        - name: Set up Python for FABM preprocessing tools
           run: |
-            cd exp
-            cat >> ../work/MOM_SIS_BLING/INPUT/field_table <<EOL
+            conda install python netcdf4
+            pip install -v ./fabm
+        - name: Configure MOM5 for FABM
+          run: |
+            cat >> work/MOM_SIS_BLING/INPUT/field_table <<EOL
             "namelists", "ocean_mod", "ocean_fabm"
               use=.true.
             /
             EOL
-            cp ../fabm/testcases/fabm-gotm-npzd.yaml ../work/MOM_SIS_BLING/fabm.yaml
+            cp fabm/testcases/fabm-gotm-npzd.yaml work/MOM_SIS_BLING/fabm.yaml
+            exp/FABM_create_initial_condition.py work/MOM_SIS_BLING
+        - name: Run MOM5 with FABM
+          run: |
+            cd exp
             ./MOM_run.csh --type MOM_SIS --experiment MOM_SIS_BLING --platform conda --npes 1
